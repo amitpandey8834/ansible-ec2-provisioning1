@@ -1,0 +1,6 @@
+all:
+  hosts:
+    aws:
+      ansible_host: ec2-54-90-52-221.compute-1.amazonaws.com
+      ansible_user: ubuntu
+      ansible_private_key_file: Awskey.pem

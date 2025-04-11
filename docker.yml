@@ -1,0 +1,40 @@
+- name: Configure Docker and Deploy Containers
+  hosts: aws
+  become: true
+
+  vars:
+    container_name: nginx_container
+    container_image: nginx
+    container_ports:
+      - "8080:80"
+
+  tasks:
+    - name: Install required packages
+      apt:
+        name:
+          - docker.io
+          - python3-pip
+          - python3-venv
+          - python3-full
+        state: present
+        update_cache: yes
+
+    - name: Ensure Docker service is running
+      service:
+        name: docker
+        state: started
+        enabled: true
+
+    - name: Pull Nginx Docker image
+      community.docker.docker_image:
+        name: "{{ container_image }}"
+        source: pull
+
+    - name: Run Nginx container
+      community.docker.docker_container:
+        name: "{{ container_name }}"
+        image: "{{ container_image }}"
+        ports:
+          - "8080:80"
+        state: started
+        restart_policy: always
